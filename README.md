@@ -3,11 +3,10 @@
 * .NET 8 & C# 12.
 * Architecture: Vertical Slice Architecture.
 * Libraties:
-  *  Mediator:
-  *  Martin: working with DocumentDB on PostgreSQL
+  *  Mediator: for CQRS pattern
+  *  Marten: working with DocumentDB on PostgreSQL
   *  Carter: defining Minimal APIs
-  *  Mapster: DTO mapping
-  *  Marten
+  *  Mapster: DTO mapping hight performance
 * Design Patterns: CQRS, Mediator, Minimal APIs
 * RESTful API pattern: Minimal APIs
 * Data validation: Fluent Validation
