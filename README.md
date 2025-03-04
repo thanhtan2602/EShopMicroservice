@@ -1,16 +1,27 @@
 # EShopMicroservice
-## Catalog Api Microservice:
+## Common techs:
 * .NET 8 & C# 12.
+* Data validation: Fluent Validation
+* Deloyment: Docker, docker compose
+## Catalog Api Microservice:
 * Architecture: Vertical Slice Architecture.
 * Libraties:
   *  Mediator: for CQRS pattern
   *  Marten: working with DocumentDB on PostgreSQL
   *  Carter: defining Minimal APIs
   *  Mapster: DTO mapping hight performance
+  *  HealthChecks: Health check api, db, redis
 * Design Patterns: CQRS, Mediator, Minimal APIs
 * RESTful API pattern: Minimal APIs
-* Data validation: Fluent Validation
-* Containerizing microservices: Dockerfile & Docker Compose
+* Database: Postgres
+## Basket Api Microservice:
+* Architecture: Vertical Slice Architecture.
+* Database: Postgres
+* Cache: Redis
+## Discount Grpc:
+* Architrecture: N-Layer architecture
+* Database: SQLite Database
+* Patterns: gRPC  
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
