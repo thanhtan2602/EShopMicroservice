@@ -21,7 +21,11 @@
 ## Discount Grpc:
 * Architrecture: N-Layer architecture
 * Database: SQLite Database
-* Patterns: gRPC  
+* Patterns: gRPC
+## Ordering API Service
+* Architecture: Clean Architectur, DDD
+* Database: SQL Server
+* Patterns: CQRS, Mediator, SOLID
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
