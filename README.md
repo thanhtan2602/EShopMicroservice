@@ -25,7 +25,7 @@
 ## Ordering API Service
 * Architecture: Clean Architectur, DDD
 * Database: SQL Server
-* Patterns: CQRS, Mediator, SOLID
+* Patterns: CQRS, Mediator, SOLID, Event Sourcing Pattern (for database)
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
