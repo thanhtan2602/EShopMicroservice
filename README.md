@@ -23,9 +23,12 @@
 * Database: SQLite Database
 * Patterns: gRPC
 ## Ordering API Service
-* Architecture: Clean Architectur, DDD
+* Architecture: Clean Architectur, DDD (Tactital)
 * Database: SQL Server
-* Patterns: CQRS, Mediator, SOLID, Event Sourcing Pattern (for database)
+* Patterns: CQRS (Logical CQRS), Mediator, SOLID
+ * Database patterns/priciple:
+  * Event Sourcing Pattern, Sequence Pattern
+  * Eventual Consistency Principle
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
