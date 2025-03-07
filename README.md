@@ -26,9 +26,9 @@
 * Architecture: Clean Architectur, DDD (Tactital)
 * Database: SQL Server
 * Patterns: CQRS (Logical CQRS), Mediator, SOLID
- * Database patterns/priciple:
-  * Event Sourcing Pattern, Sequence Pattern
-  * Eventual Consistency Principle
+  * Database patterns/priciple:
+    * Event Sourcing Pattern, Sequence Pattern
+    * Eventual Consistency Principle
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
