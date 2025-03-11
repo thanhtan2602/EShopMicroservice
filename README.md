@@ -1,4 +1,5 @@
 # EShopMicroservice
+![315259850-efe5e688-67f2-4ddd-af37-d9d3658aede4](https://github.com/user-attachments/assets/6c4cc076-802b-4f7f-a08b-5de00a28b596)
 ## Common techs:
 * .NET 8 & C# 12.
 * Data validation: Fluent Validation
@@ -46,6 +47,4 @@
   * Local Env: 5003-5053
   * Docker Env: 6003-6063
   * Docker Inside: 
-
-![315259850-efe5e688-67f2-4ddd-af37-d9d3658aede4](https://github.com/user-attachments/assets/6c4cc076-802b-4f7f-a08b-5de00a28b596)
 
