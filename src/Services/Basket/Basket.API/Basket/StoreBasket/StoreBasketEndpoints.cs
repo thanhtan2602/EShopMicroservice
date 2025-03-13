@@ -3,7 +3,7 @@ namespace Basket.API.Basket.StoreBasket
 {
     public record StoreBasketResponse(string UserName);
     public record StoreBasketRequest(ShoppingCart Cart);
-    public class StoreBasketEndpoint : ICarterModule
+    public class StoreBasketEndpoints : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {

@@ -7,8 +7,7 @@ namespace BuildingBlocks.Messaging.MassTransit
 {
     public static class Extentions
     {
-        public static IServiceCollection AddMessageBroker
-        (this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
+        public static IServiceCollection AddMessageBroker(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
         {
             services.AddMassTransit(config =>
             {
@@ -21,7 +20,7 @@ namespace BuildingBlocks.Messaging.MassTransit
                 {
                     configurator.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
                     {
-                        host.Username(configuration["MessageBroker:UserName"]);
+                        host.Username(configuration["MessageBroker:UserName  "]);
                         host.Password(configuration["MessageBroker:Password"]);
                     });
                     configurator.ConfigureEndpoints(context);

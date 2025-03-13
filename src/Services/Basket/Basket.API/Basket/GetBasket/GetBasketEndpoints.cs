@@ -1,7 +1,7 @@
 ﻿namespace Basket.API.Basket.GetBasket
 {
     public record GetBasketResponse(ShoppingCart Cart);
-    public class GetBasketEndpoint : ICarterModule
+    public class GetBasketEndpoints : ICarterModule
     {
         public async void AddRoutes(IEndpointRouteBuilder app)
         {

@@ -10,5 +10,3 @@
         public decimal Price { get; set; }
     }
 }
-
-//(string Name, List<string> Category, string Description, string ImageFile, decimal Price)
