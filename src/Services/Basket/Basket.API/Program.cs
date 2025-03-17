@@ -38,17 +38,17 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
 {
     options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
-});
-//.ConfigurePrimaryHttpMessageHandler(() =>
-//{
-//    var handler = new HttpClientHandler
-//    {
-//        ServerCertificateCustomValidationCallback =
-//        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-//    };
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback =
+        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
 
-//    return handler;
-//});
+    return handler;
+});
 
 // Async Communication Services
 builder.Services.AddMessageBroker(builder.Configuration);
