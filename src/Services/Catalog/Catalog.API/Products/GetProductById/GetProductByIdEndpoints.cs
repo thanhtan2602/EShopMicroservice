@@ -1,6 +1,4 @@
 ﻿
-using Catalog.API.Products.GetProducts;
-
 namespace Catalog.API.Products.GetProductById
 {
   public record GetProductByIdResponse(Product Product);
@@ -16,7 +14,7 @@ namespace Catalog.API.Products.GetProductById
         return Results.Ok(response);
       })
       .WithName("GetProductById")
-      .Produces<GetProductsResponse>(StatusCodes.Status400BadRequest)
+      .Produces<GetProductByIdResponse>(StatusCodes.Status400BadRequest)
       .WithSummary("GetProductById")
       .WithDescription("Get Product by Id");
     }
