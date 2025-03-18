@@ -44,6 +44,7 @@
 ## Frontend:
   * ASP.NET Razor, Bootstrap 4
   * Patterns: Factory
+  * Libraries: Refit
 ## Ports:
 * Catalog:
   * Local Env: 5000-5050
