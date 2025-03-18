@@ -15,32 +15,32 @@
 ## BuildingBlocks
 ## ApiGateway
 ## Microservices
-  ## Catalog Api Microservice:
-  * Architecture: Vertical Slice Architecture.
-  * Libraties:
-    *  Mediator: for CQRS pattern
-    *  Marten: working with DocumentDB on PostgreSQL
-    *  Carter: defining Minimal APIs
-    *  Mapster: DTO mapping hight performance
-    *  HealthChecks: Health check api, db, redis
-  * Design Patterns: CQRS, Mediator, Minimal APIs
-  * RESTful API pattern: Minimal APIs
-  * Database: Postgres
-  ## Basket Api Microservice:
-  * Architecture: Vertical Slice Architecture.
-  * Database: Postgres
-  * Cache: Redis
-  ## Discount Grpc:
-  * Architrecture: N-Layer architecture
-  * Database: SQLite Database
-  * Patterns: gRPC
-  ## Ordering API Service
-  * Architecture: Clean Architectur, DDD (Tactital)
-  * Database: SQL Server
-  * Patterns: CQRS (Logical CQRS), Mediator, SOLID
-    * Database patterns/priciple:
-      * Event Sourcing Pattern, Sequence Pattern
-      * Eventual Consistency Principle
+   ## Catalog Api Microservice:
+   * Architecture: Vertical Slice Architecture.
+   * Libraties:
+     *  Mediator: for CQRS pattern
+     *  Marten: working with DocumentDB on PostgreSQL
+     *  Carter: defining Minimal APIs
+     *  Mapster: DTO mapping hight performance
+     *  HealthChecks: Health check api, db, redis
+   * Design Patterns: CQRS, Mediator, Minimal APIs
+   * RESTful API pattern: Minimal APIs
+   * Database: Postgres
+   ## Basket Api Microservice:
+   * Architecture: Vertical Slice Architecture.
+   * Database: Postgres
+   * Cache: Redis
+   ## Discount Grpc:
+   * Architrecture: N-Layer architecture
+   * Database: SQLite Database
+   * Patterns: gRPC
+   ## Ordering API Service
+   * Architecture: Clean Architectur, DDD (Tactital)
+   * Database: SQL Server
+   * Patterns: CQRS (Logical CQRS), Mediator, SOLID
+     * Database patterns/priciple:
+       * Event Sourcing Pattern, Sequence Pattern
+       * Eventual Consistency Principle
 ## Frontend:
   * ASP.NET Razor, Bootstrap 4
   * Patterns: Factory
