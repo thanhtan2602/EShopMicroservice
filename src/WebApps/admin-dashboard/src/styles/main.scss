@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "variables";
+
+// Global Styles
+body {
+  font-family: $font-family;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  background-color: $light-color;
+  color: $dark-color;
+}
+
+// Buttons
+.btn {
+  display: inline-block;
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-base;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+
+  &.btn-primary {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+
+  &.btn-danger {
+    background-color: $danger-color;
+    color: white;
+    
+    &:hover {
+      background-color: darken($danger-color, 10%);
+    }
+  }
+}
+
+// Container
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
+}
