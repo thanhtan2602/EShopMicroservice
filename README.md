@@ -70,4 +70,7 @@
   * Local Env: 5005-5055
   * Docker Env: 6005-6065
   * Docker Inside: 8080-8081
-
+* Auth API:
+  * Local Env: 5006-5056
+  * Docker Env: 6006-6066
+  * Docker Inside: 8080-8081
