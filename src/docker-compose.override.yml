@@ -25,6 +25,18 @@ services:
     volumes:
       - postgres_basket:/var/lib/postgresql/data
 
+  authdb:
+    container_name: authdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=AuthDb
+    restart: always
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_auth:/var/lib/postgresql/data
+
   distributedcache:
     container_name: distributedcache
     restart: always
@@ -173,6 +185,25 @@ services:
       #- ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${USERPROFILE}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${USERPROFILE}/ASP.NET/Https:/https:ro
+  auth.api:
+    container_name: Auth.API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=authdb;Port=5432;Database=AuthDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
+    depends_on:
+      - authdb
+    ports:
+      - "6006:8080"
+      - "6066:8081"
+    volumes:
+      - ${USERPROFILE}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${USERPROFILE}/ASP.NET/Https:/https:ro
 volumes:
   postgres_catalog:
   postgres_basket:
+  postgres_auth:
+

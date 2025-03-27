@@ -7,6 +7,9 @@ services:
   basketdb:
     image: postgres
 
+  authdb:
+    image: postgres
+
   distributedcache:
     image: redis
 
@@ -52,6 +55,13 @@ services:
       context: .
       dockerfile: WebApps/Shopping.Web/Dockerfile
 
+  auth.api:
+    image: ${DOCKER_REGISTRY-}authapi
+    build:
+      context: .
+      dockerfile: Services/Auth/Auth.API/Dockerfile
+
 volumes:
   postgres_catalog:
   postgres_basket:
+

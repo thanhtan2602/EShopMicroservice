@@ -1,9 +1,30 @@
 import React, { useState } from "react";
 import "./styles/_login.scss";
+import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../../features/auth/authApi";
+import { useNavigate } from "react-router-dom";
+import { setToken } from "../../features/auth/authSlice";
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [login, { isLoading, error }] = useLoginMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   let coverImg = require("../../assets/images/login-images/login-cover.svg").default;
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await login({ email, password }).unwrap();
+      dispatch(setToken(response.token));
+      navigate('/');
+    } catch (err) {
+      console.error('Login failed', err);
+    }
+  };
 
   return (
     <div className="mx-auto h-screen flex items-center">
@@ -17,7 +38,7 @@ export default function Login() {
             <h5 className="light-text text-xl font-semibold mt-2">Dashtrans Admin</h5>
             <p>Please log in to your account</p>
           </div>
-          <form className="space-y-4" autoComplete="off">
+          <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
             <div>
               <label htmlFor="input-email" className="block mb-2">Email</label>
               <input
@@ -26,6 +47,8 @@ export default function Login() {
                 className="w-full focus:outline-none"
                 placeholder="jhon@example.com"
                 autoComplete="off"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -37,6 +60,8 @@ export default function Login() {
                   className="w-full rounded px-3 py-2 focus:outline-none pr-10"
                   placeholder="Enter your password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                   <button
                     type="button"
