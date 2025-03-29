@@ -1,6 +1,6 @@
 ﻿namespace Auth.API.User.CreateUser
 {
-    public record CreateUserRequest(string Username, string Password, string Email, bool IsAdmin);
+    public record CreateUserRequest(string FullName, string Password, string Email, bool IsAdmin);
     public record CreateUserResponse(int Id);
     public class CreateUserEndpoints : ICarterModule
     {

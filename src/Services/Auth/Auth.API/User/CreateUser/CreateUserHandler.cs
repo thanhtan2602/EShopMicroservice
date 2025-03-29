@@ -1,8 +1,6 @@
-﻿using userModel = Auth.API.Models;
-
-namespace Auth.API.User.CreateUser
+﻿namespace Auth.API.User.CreateUser
 {
-    public record CreateUserCommand(string Username, string Password, string Email, bool IsAdmin)
+    public record CreateUserCommand(string FullName, string Password, string Email, bool IsAdmin)
         : ICommand<CreateUserResult>;
     public record CreateUserResult(int Id);
 
@@ -10,7 +8,9 @@ namespace Auth.API.User.CreateUser
     {
         public CreateUserCommandValidator()
         {
-            RuleFor(x => x.Username).NotEmpty().WithMessage("User name is required");
+            RuleFor(x => x.FullName).NotEmpty().WithMessage("User name is required");
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
         }
     }
 
@@ -19,10 +19,10 @@ namespace Auth.API.User.CreateUser
     {
         public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
         {
-            var user = new userModel.User
+            var user = new model.User
             {
-                Username = command.Username,
-                Password = command.Password,
+                FullName = command.FullName,
+                Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 Email = command.Email,
                 Status = UserStatus.Pending,
                 IsAdmin = command.IsAdmin
