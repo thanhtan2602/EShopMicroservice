@@ -1,4 +1,4 @@
-﻿namespace Auth.API.User.CreateUser
+﻿namespace Auth.API.Features.User.CreateUser
 {
     public record CreateUserRequest(string FullName, string Password, string Email, bool IsAdmin);
     public record CreateUserResponse(int Id);

@@ -1,4 +1,4 @@
-﻿namespace Auth.API.User.DeleteUser
+﻿namespace Auth.API.Features.User.DeleteUser
 {
     public record DeleteUserResponse(bool isSuccess);
     public class DeleteUserEndpoints : ICarterModule

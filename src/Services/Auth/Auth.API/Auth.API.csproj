@@ -24,8 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Auth\Register\" />
-    <Folder Include="User\UpdateUser\" />
+    <Folder Include="Features\User\UpdateUser\" />
   </ItemGroup>
 
   <ItemGroup>

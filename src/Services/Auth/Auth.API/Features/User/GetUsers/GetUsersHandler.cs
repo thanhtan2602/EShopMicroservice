@@ -1,6 +1,6 @@
 ﻿using Marten.Pagination;
 
-namespace Auth.API.User.GetUsers
+namespace Auth.API.Features.User.GetUsers
 {
     public record GetUsersQuery(int? PageNumber = 1, int? PageSize = 10) : IQuery<GetUsersResult>;
     public record GetUsersResult(IEnumerable<model.User> Users);

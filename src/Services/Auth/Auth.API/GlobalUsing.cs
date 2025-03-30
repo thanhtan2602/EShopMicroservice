@@ -15,4 +15,5 @@ global using System.Text;
 global using Auth.API.Dtos;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Caching.Distributed;
-global using Auth.API.Auth.Token;
+global using Auth.API.Constants;
+global using Auth.API.Helpers;

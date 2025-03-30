@@ -1,4 +1,7 @@
-﻿namespace Auth.API.Auth.Login
+﻿using Auth.API.Features.Auth.Register;
+using Auth.API.Features.Auth.Token;
+
+namespace Auth.API.Features.Auth.Login
 {
     public record LoginRequest(string Email, string Password);
     public record LoginResponse(model.User User, string AccessToken, string RefreshToken);
@@ -12,10 +15,20 @@
 
                 var result = await sender.Send(query);
 
+                if (result is null)
+                {
+                    return Results.Unauthorized();
+                }
+
                 var response = result.Adapt<LoginResponse>();
 
                 return Results.Ok(response);
-            });
+            })
+            .WithName("Login")
+            .Produces<RefreshTokenResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .WithSummary("Login")
+            .WithDescription("Login");
         }
     }
 }

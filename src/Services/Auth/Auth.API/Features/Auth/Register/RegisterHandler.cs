@@ -1,12 +1,12 @@
-﻿namespace Auth.API.User.CreateUser
+﻿namespace Auth.API.Features.Auth.Register
 {
-    public record CreateUserCommand(string FullName, string Password, string Email, bool IsAdmin)
-        : ICommand<CreateUserResult>;
-    public record CreateUserResult(int Id);
+    public record RegisterCommand(string FullName, string Password, string Email)
+            : ICommand<RegisterResult>;
+    public record RegisterResult(bool IsSuccess = true);
 
-    public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+    public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {
-        public CreateUserCommandValidator()
+        public RegisterCommandValidator()
         {
             RuleFor(x => x.FullName).NotEmpty().WithMessage("User name is required");
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
@@ -14,10 +14,10 @@
         }
     }
 
-    internal class CreateUserCommandHandler(IDocumentSession session)
-        : ICommandHandler<CreateUserCommand, CreateUserResult>
+    internal class RegisterCommandHandler(IDocumentSession session)
+        : ICommandHandler<RegisterCommand, RegisterResult>
     {
-        public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+        public async Task<RegisterResult> Handle(RegisterCommand command, CancellationToken cancellationToken)
         {
             var user = new model.User
             {
@@ -25,14 +25,14 @@
                 Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 Email = command.Email,
                 Status = UserStatus.Pending,
-                IsAdmin = command.IsAdmin
+                IsAdmin = false
             };
 
 
             session.Store(user);
             await session.SaveChangesAsync(cancellationToken);
 
-            return new CreateUserResult(user.Id);
+            return new RegisterResult();
         }
     }
 }

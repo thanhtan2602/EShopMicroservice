@@ -1,4 +1,4 @@
-﻿namespace Auth.API.User.GetUserById
+﻿namespace Auth.API.Features.User.GetUserById
 {
     public record GetUserByIdQuery(int Id) : IQuery<GetUserByIdResult>;
     public record GetUserByIdResult(model.User User);

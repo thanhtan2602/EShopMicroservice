@@ -1,6 +1,6 @@
-﻿namespace Auth.API.User.GetUsers
+﻿namespace Auth.API.Features.User.GetUsers
 {
-public record GetUsersRequest(int? PageNumber = 1, int? PageSize = 10);
+    public record GetUsersRequest(int? PageNumber = 1, int? PageSize = 10);
     public record GetUsersResponse(IEnumerable<model.User> Users);
     public class GetUsersEndpoints : ICarterModule
     {
