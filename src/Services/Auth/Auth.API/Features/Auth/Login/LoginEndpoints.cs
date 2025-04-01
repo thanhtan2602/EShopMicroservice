@@ -1,10 +1,7 @@
-﻿using Auth.API.Features.Auth.Register;
-using Auth.API.Features.Auth.Token;
-
-namespace Auth.API.Features.Auth.Login
+﻿namespace Auth.API.Features.Auth.Login
 {
     public record LoginRequest(string Email, string Password);
-    public record LoginResponse(model.User User, string AccessToken, string RefreshToken);
+    public record LoginResponse(UserModel User, string AccessToken, string RefreshToken);
     public class LoginEndpoints : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
@@ -17,7 +14,7 @@ namespace Auth.API.Features.Auth.Login
 
                 if (result is null)
                 {
-                    return Results.Unauthorized();
+                    return Results.NotFound();
                 }
 
                 var response = result.Adapt<LoginResponse>();
@@ -26,7 +23,7 @@ namespace Auth.API.Features.Auth.Login
             })
             .WithName("Login")
             .Produces<RefreshTokenResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status404NotFound)
             .WithSummary("Login")
             .WithDescription("Login");
         }

@@ -1,10 +1,9 @@
-﻿using Auth.API.Features.Auth.Token;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace Auth.API.Features.Auth.Login
 {
     public record LoginQuery(string Email, string Password) : IQuery<LoginResult>;
-    public record LoginResult(model.User User, string AccessToken, string RefreshToken);
+    public record LoginResult(UserModel User, string AccessToken, string RefreshToken);
 
     public class LoginQueryHandler(
         IDocumentSession session,
@@ -35,7 +34,7 @@ namespace Auth.API.Features.Auth.Login
             await cache.SetStringAsync(refreshTokenKey, refreshToken,
                 new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(expiryDays) });
 
-            return new LoginResult(user, accessToken, refreshToken);
+            return new LoginResult(user.Adapt<UserModel>(), accessToken, refreshToken);
         }
     }
 }

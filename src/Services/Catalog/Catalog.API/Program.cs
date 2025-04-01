@@ -1,43 +1,78 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Load Assembly
 var assembly = typeof(Program).Assembly;
-builder.Services.AddMediatR(config =>
-{
-    config.RegisterServicesFromAssembly(assembly);
-    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-});
 
-builder.Services.AddValidatorsFromAssembly(assembly);
-
-builder.Services.AddCarter();
-
-builder.Services.AddMarten(opts =>
-{
-    opts.Connection(builder.Configuration.GetConnectionString("Database")!);
-}).UseLightweightSessions();
-
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
-}
-
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
-builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
+// Configure Services
+ConfigureServices(builder.Services, builder.Configuration, assembly, builder.Environment);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-app.MapCarter();
-
-app.UseExceptionHandler(options => { });
-
-app.UseHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+// Configure Middleware
+ConfigureMiddleware(app);
 
 app.Run();
+
+void ConfigureServices(IServiceCollection services, IConfiguration configuration, Assembly assembly, IWebHostEnvironment env)
+{
+    // MediatR with Behaviors
+    services.AddMediatR(config =>
+    {
+        config.RegisterServicesFromAssembly(assembly);
+        config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    });
+
+    // Validators
+    services.AddValidatorsFromAssembly(assembly);
+
+    // Carter (Minimal API Framework)
+    services.AddCarter();
+
+    // Marten (PostgreSQL ORM)
+    services.AddMarten(opts =>
+    {
+        opts.Connection(configuration.GetConnectionString("Database")!);
+    }).UseLightweightSessions();
+
+    // Database Initialization (Only in Development)
+    if (env.IsDevelopment())
+    {
+        services.InitializeMartenWith<CatalogInitialData>();
+    }
+
+    // Exception Handler
+    services.AddExceptionHandler<CustomExceptionHandler>();
+
+    // Health Checks
+    services.AddHealthChecks()
+            .AddNpgSql(configuration.GetConnectionString("Database")!);
+
+    // CORS Configuration
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    });
+}
+
+void ConfigureMiddleware(WebApplication app)
+{
+    app.UseCors("AllowFrontend");
+    app.UseExceptionHandler(options => { });
+    app.UseHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
+
+    app.MapCarter();
+}

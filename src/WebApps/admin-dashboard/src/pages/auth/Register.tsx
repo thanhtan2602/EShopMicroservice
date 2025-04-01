@@ -1,9 +1,37 @@
 import React, { useState } from "react";
 import "./styles/_login.scss";
+import { useSignupMutation } from "../../features/auth/authApi";
+import { useNavigate } from "react-router-dom";
+import { validateInput } from "../../features/auth/authHelper";
 
 export default function Register() {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [signup] = useSignupMutation();
+  const navigate = useNavigate();
+
   let coverImg = require("../../assets/images/login-images/register-cover.svg").default;
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { isValid, errors } = validateInput({ email, password, confirmPassword });
+    if (!isValid) {
+      console.log(errors);
+      return;
+    }
+
+    try {
+      await signup({ fullName, email, password }).unwrap();
+      navigate('/login');
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="mx-auto h-screen flex items-center">
@@ -17,15 +45,28 @@ export default function Register() {
             <h5 className="light-text text-xl font-semibold mt-2">Dashtrans Admin</h5>
             <p>Please fill the below details to create your account</p>
           </div>
-          <form className="space-y-4" autoComplete="off">
+          <form onSubmit={handleSignUp} className="space-y-4" autoComplete="off">
             <div>
-              <label htmlFor="input-email" className="block mb-2">Email</label>
+              <label htmlFor="input-fullName" className="block mb-2">Full Name</label>
+              <input
+                type="text"
+                id="input-fullName"
+                className="w-full focus:outline-none"
+                autoComplete="off"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="input-email" className="block mb-2">Email Address</label>
               <input
                 type="email"
                 id="input-email"
                 className="w-full focus:outline-none"
                 placeholder="jhon@example.com"
                 autoComplete="off"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -37,31 +78,47 @@ export default function Register() {
                   className="w-full rounded px-3 py-2 focus:outline-none pr-10"
                   placeholder="Enter your password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-3 flex items-center"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                  >
-                    <i className={passwordVisible ? "bx bx-show" : "bx bx-hide"}></i>
-                  </button>
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <i className={passwordVisible ? "bx bx-show" : "bx bx-hide"}></i>
+                </button>
               </div>
             </div>
-            <div className="flex justify-between items-center text-sm my-4">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" id="input-remember" className="form-checkbox" />
-                <span>Remember me</span>
-              </label>
-              <a href="#" className="light-text hover:underline">Forgot password ?</a>
+            <div>
+              <label htmlFor="input-confirmPassword" className="block mb-2">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={confirmPasswordVisible ? "text" : "password"}
+                  id="input-confirmPassword"
+                  className="w-full rounded px-3 py-2 focus:outline-none pr-10"
+                  placeholder="Re-Enter your password"
+                  autoComplete="new-confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center"
+                  onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                >
+                  <i className={confirmPasswordVisible ? "bx bx-show" : "bx bx-hide"}></i>
+                </button>
+              </div>
             </div>
-            <button className="light-text btn-signin w-full rounded transition">Sign In</button>
+            <button className="light-text btn-signin w-full rounded transition">Sign up</button>
             <div className="mt-4 text-center">
-              <span>Don't have an account yet?</span>
-              <a href="#" className="light-text hover:underline"> Sign up here</a>
+              <span>Already have an account?</span>
+              <a href="/register" className="light-text hover:underline"> Sign in here</a>
             </div>
           </form>
           <div className="login-separater text-center mb-5">
-            <span>OR SIGN IN WITH</span>
+            <span>OR SIGN UP WITH EMAIL</span>
             <hr />
           </div>
           <div className="social-icons">

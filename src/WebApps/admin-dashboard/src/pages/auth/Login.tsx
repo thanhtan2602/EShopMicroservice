@@ -3,12 +3,13 @@ import "./styles/_login.scss";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../../features/auth/authApi";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../../features/auth/authSlice";
+import { setTokens, setUser } from "../../features/auth/authSlice";
+import { validateInput } from "../../features/auth/authHelper";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,12 +18,32 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const { isValid, errors } = validateInput({ email, password });
+    if (!isValid) {
+      console.log(errors);
+      return;
+    }
+
     try {
       const response = await login({ email, password }).unwrap();
-      dispatch(setToken(response.token));
-      navigate('/');
-    } catch (err) {
-      console.error('Login failed', err);
+
+      localStorage.setItem("user", JSON.stringify(response.user));
+      dispatch(setUser(response.user));
+
+      dispatch(setTokens({
+        accessToken: response.accessToken ?? "",
+        refreshToken: response.refreshToken ?? "",
+      }));
+
+      navigate('/dashboard');
+    }
+    catch (err: any) {
+      if (err.status === 404) {
+        alert("Sai tài khoản hoặc mật khẩu!");
+      } else {
+        console.error("Lỗi đăng nhập:", err);
+      }
     }
   };
 
@@ -63,13 +84,13 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-3 flex items-center"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                  >
-                    <i className={passwordVisible ? "bx bx-show" : "bx bx-hide"}></i>
-                  </button>
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <i className={passwordVisible ? "bx bx-show" : "bx bx-hide"}></i>
+                </button>
               </div>
             </div>
             <div className="flex justify-between items-center text-sm my-4">
@@ -82,7 +103,7 @@ export default function Login() {
             <button className="light-text btn-signin w-full rounded transition">Sign In</button>
             <div className="mt-4 text-center">
               <span>Don't have an account yet?</span>
-              <a href="#" className="light-text hover:underline"> Sign up here</a>
+              <a href="/register" className="light-text hover:underline"> Sign up here</a>
             </div>
           </form>
           <div className="login-separater text-center mb-5">

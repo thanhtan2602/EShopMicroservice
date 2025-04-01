@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { order } from "../types/order/index";
+import { Order } from "../features/order/orderTypes";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
@@ -13,7 +13,7 @@ export const orderApi = createApi({
   }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
-    getAllOrders: builder.query<order[], void>({
+    getAllOrders: builder.query<Order[], void>({
       query: () => "orders",
       providesTags: ["Orders"],
     }),

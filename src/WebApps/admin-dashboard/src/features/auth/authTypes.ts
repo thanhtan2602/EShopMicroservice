@@ -1,8 +1,7 @@
-export interface User {
+export interface UserModel {
   id: number;
   userName: string;
   email: string;
-  password: string;
   status: string;
   isAdmin: boolean;
 }
@@ -13,23 +12,22 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  user: User | null;
-  token: string | null;
+  user: UserModel | null;
+  accessToken: string | null;
+  refreshToken: string | null;
 }
 
 export interface SignUpRequest {
-  name: string;
-  email: string;
+  fullName: string;
   password: string;
-  country: number;
+  email: string;
 }
 
 export interface SignUpResponse {
-  maessage: string;
-  issuccess: boolean;
+  isSuccess: boolean;
 }
 
-export interface AuthState {
-  user: User | null;
-  token: string | null;
+export interface RefreshTokenResponse {
+  newAccessToken: string | null;
+  newRefreshToken: string | null;
 }

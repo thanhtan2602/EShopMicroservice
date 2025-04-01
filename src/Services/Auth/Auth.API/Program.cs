@@ -1,56 +1,69 @@
-using Auth.API.Features.Auth.Token;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var assembly = typeof(Program).Assembly;
-
-builder.Services.AddCarter();
-
-builder.Services.AddMediatR(config =>
-{
-    config.RegisterServicesFromAssembly(assembly);
-});
-
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddDistributedMemoryCache();
-
-builder.Services.AddMarten(opts =>
-{ 
-    opts.Connection(builder.Configuration.GetConnectionString("Database")!);
-}).UseLightweightSessions();
-
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-// Authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = key,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
-builder.Services.AddAuthorization();
-
+ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.MapCarter();
-app.UseAuthentication();
-app.UseAuthorization();
+ConfigureMiddleware(app);
 
 app.Run();
 
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    var assembly = typeof(Program).Assembly;
+
+    services.AddCarter();
+    services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
+    services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+    services.AddDistributedMemoryCache();
+
+    services.AddMarten(opts =>
+        opts.Connection(configuration.GetConnectionString("Database")!)
+    ).UseLightweightSessions();
+
+    services.AddScoped<ITokenService, TokenService>();
+
+    // Authentication
+    var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = key,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+    services.AddAuthorization();
+
+    // CORS Configuration
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    });
+}
+
+void ConfigureMiddleware(WebApplication app)
+{
+    app.UseCors("AllowFrontend");
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapCarter();
+}

@@ -17,3 +17,5 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Auth.API.Constants;
 global using Auth.API.Helpers;
+global using Auth.API.Features.Auth.Token;
+global using Auth.API.ViewModels;
