@@ -1,4 +1,5 @@
-﻿namespace Catalog.API.Products.GetProductByCategory
+﻿
+namespace Catalog.API.Features.Products.GetProductByCategory
 {
     public record GetProductByCategoryResponse(IEnumerable<Product> Products);
 
@@ -7,9 +8,9 @@
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             app.MapGet("/products/category/{category}",
-                async (string category, ISender sender) =>
+                async (Guid CategoryId, ISender sender) =>
                 {
-                    var result = await sender.Send(new GetProductByCategoryQuery(category));
+                    var result = await sender.Send(new GetProductByCategoryQuery(CategoryId));
 
                     var response = result.Adapt<GetProductByCategoryResponse>();
 

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 
-namespace Catalog.API.Products.UpdateProduct
+namespace Catalog.API.Features.Products.UpdateProduct
 {
-    public record UpdateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageFile, decimal Price)
+    public record UpdateProductCommand(Guid Id, string Name, Guid CategoryId, string Description, string ImageFile, decimal Price)
       : ICommand<UpdateProductResult>;
     public record UpdateProductResult(bool isSuccess);
 
@@ -29,7 +29,7 @@ namespace Catalog.API.Products.UpdateProduct
             }
 
             product.Name = command.Name;
-            product.Category = command.Category;
+            product.CategoryId = command.CategoryId;
             product.Description = command.Description;
             product.ImageFile = command.ImageFile;
             product.Price = command.Price;
