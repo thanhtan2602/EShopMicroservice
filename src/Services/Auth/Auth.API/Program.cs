@@ -1,7 +1,11 @@
+using Auth.API.Data;
+using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions.Handler;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-ConfigureServices(builder.Services, builder.Configuration);
+ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
@@ -10,12 +14,21 @@ ConfigureMiddleware(app);
 
 app.Run();
 
-void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
 {
     var assembly = typeof(Program).Assembly;
 
     services.AddCarter();
-    services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
+    services.AddMediatR(config =>
+    {
+        config.RegisterServicesFromAssembly(assembly);
+        config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    });
+
+    // Validators
+    services.AddValidatorsFromAssembly(assembly);
+
     services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
     services.AddDistributedMemoryCache();
 
@@ -23,7 +36,21 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         opts.Connection(configuration.GetConnectionString("Database")!)
     ).UseLightweightSessions();
 
+    // Services
     services.AddScoped<ITokenService, TokenService>();
+
+    // Database Initialization (Only in Development)
+    if (env.IsDevelopment())
+    {
+        services.InitializeMartenWith<AuthInitialData>();
+    }
+
+    // Exception Handler
+    services.AddExceptionHandler<CustomExceptionHandler>();
+
+    // Health Checks
+    services.AddHealthChecks()
+            .AddNpgSql(configuration.GetConnectionString("Database")!);
 
     // Authentication
     var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
