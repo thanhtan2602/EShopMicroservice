@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using Ordering.Application.Data;
 using Ordering.Application.Dtos;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.Domain.Models;
-using Ordering.Domain.ValueObjects;
 
 namespace Ordering.UnitTests.Handlers
 {
