@@ -1,6 +1,9 @@
-using Auth.API.Data;
+﻿using Auth.API.Data;
+using Auth.API.Models;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddValidatorsFromAssembly(assembly);
 
     services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+    services.Configure<GoogleAuthSettings>(configuration.GetSection("Authentication:Google"));
     services.AddDistributedMemoryCache();
 
     services.AddMarten(opts =>
@@ -53,24 +57,37 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             .AddNpgSql(configuration.GetConnectionString("Database")!);
 
     // Authentication
-    var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+    var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()!;
+    var googleAuthSettings = configuration.GetSection("Authentication:Google").Get<GoogleAuthSettings>()!;
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
 
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
+    services.AddAuthentication(opt =>
+    {
+        opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddCookie().AddGoogle(options =>
+    {
+        options.ClientId = googleAuthSettings.ClientId;
+        options.ClientSecret = googleAuthSettings.ClientSecret;
+        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.SaveTokens = true;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = key,
-                ClockSkew = TimeSpan.Zero
-            };
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = key,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
     services.AddAuthorization();
 

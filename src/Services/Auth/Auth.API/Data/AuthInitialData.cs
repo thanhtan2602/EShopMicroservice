@@ -28,7 +28,7 @@ namespace Auth.API.Data
                 Id = 1,
                 Email="admin@123",
                 FullName="Admin",
-                Password = "admin@123",
+                //Password = "admin@123",
                 Status = UserStatus.Active,
                 IsAdmin = true
             }

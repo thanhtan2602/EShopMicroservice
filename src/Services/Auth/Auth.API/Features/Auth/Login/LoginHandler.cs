@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace Auth.API.Features.Auth.Login
+﻿namespace Auth.API.Features.Auth.Login
 {
     public record LoginQuery(string Email, string Password) : IQuery<LoginResult>;
     public record LoginResult(UserModel User, string AccessToken, string RefreshToken);
@@ -17,10 +15,10 @@ namespace Auth.API.Features.Auth.Login
         {
             var user = await session.Query<model.User>().FirstOrDefaultAsync(x => x.Email == query.Email);
 
-            if (user is null || !BCrypt.Net.BCrypt.Verify(query.Password, user.Password))
-            {
-                return null;
-            }
+            //if (user is null || !BCrypt.Net.BCrypt.Verify(query.Password, user.Password))
+            //{
+            //    return null;
+            //}
 
             // Generate Access Token
             var accessToken = tokenService.GenerateAccessToken(user);

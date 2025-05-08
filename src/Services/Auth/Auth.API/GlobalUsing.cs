@@ -19,3 +19,5 @@ global using Auth.API.Constants;
 global using Auth.API.Helpers;
 global using Auth.API.Features.Auth.Token;
 global using Auth.API.ViewModels;
+global using System.Text.Json.Serialization;
+global using Microsoft.Extensions.Options;

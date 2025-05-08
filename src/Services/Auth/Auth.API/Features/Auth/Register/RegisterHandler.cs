@@ -22,7 +22,7 @@
             var user = new model.User
             {
                 FullName = command.FullName,
-                Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
+                //Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 Email = command.Email,
                 Status = UserStatus.Pending,
                 IsAdmin = false

@@ -47,6 +47,10 @@ export default function Login() {
     }
   };
 
+  const openGoogleLogin = () => {
+    window.location.href = `https://localhost:5056/auth-service/google/login`
+  };
+
   return (
     <div className="mx-auto h-screen flex items-center">
       <div className="grid grid-cols-12 w-full rounded-lg overflow-hidden">
@@ -117,9 +121,9 @@ export default function Login() {
             <a href="https://x.com" aria-label="Twitter">
               <i className="bx bxl-twitter"></i>
             </a>
-            <a href="https://www.google.com" aria-label="Google">
+            <button onClick={openGoogleLogin} aria-label="Google">
               <i className="bx bxl-google"></i>
-            </a>
+            </button>
             <a href="https://www.linkedin.com" aria-label="LinkedIn">
               <i className="bx bxl-linkedin"></i>
             </a>

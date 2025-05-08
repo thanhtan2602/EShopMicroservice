@@ -1,6 +1,4 @@
-﻿using Auth.API.Features.Auth.Token;
-
-namespace Auth.API.Features.Auth.Logout
+﻿namespace Auth.API.Features.Auth.Logout
 {
     public record LogoutQuery(string RefreshToken) : IQuery<LogoutResult>;
 

@@ -8,7 +8,7 @@ import {
   SignUpResponse
 } from "./authTypes";
 
-const BASE_URL = process.env.NODE_ENV === "production" ? "https://localhost:6066" : "https://localhost:5056";
+const BASE_URL = process.env.NODE_ENV === "production" ? "https://localhost:6066/auth-service" : "https://localhost:5056/auth-service";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -16,26 +16,26 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/auth/login",
+        url: "/login",
         method: "POST",
         body: credentials,
       }),
     }),
     signup: builder.mutation<SignUpResponse, SignUpRequest>({
       query: (user) => ({
-        url: "/auth/register",
+        url: "/register",
         method: "POST",
         body: user,
       }),
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: "/auth/logout",
+        url: "/logout",
         method: "POST",
       }),
     }),
     getCurrentUser: builder.query<UserModel, void>({
-      query: () => "/auth/me",
+      query: () => "/me",
     }),
   }),
 });
