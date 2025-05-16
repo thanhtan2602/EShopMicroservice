@@ -1,4 +1,6 @@
-﻿namespace Auth.API.Dtos
+﻿using System.Text.Json.Serialization;
+
+namespace Auth.API.Dtos
 {
     public class GoogleTokenResponse
     {

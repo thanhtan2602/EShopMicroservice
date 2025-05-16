@@ -1,9 +1,13 @@
-﻿using Auth.API.Data;
-using Auth.API.Models;
-using BuildingBlocks.Behaviors;
-using BuildingBlocks.Exceptions.Handler;
+using Auth.API.Data;
+using Auth.API.Repositories.Interfaces;
+using Auth.API.Services;
+using Carter;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +17,7 @@ ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-ConfigureMiddleware(app);
+ConfigureMiddlewares(app, builder.Environment);
 
 app.Run();
 
@@ -21,44 +25,33 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 {
     var assembly = typeof(Program).Assembly;
 
-    services.AddCarter();
+    services.AddDbContext<AuthDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
     services.AddMediatR(config =>
     {
-        config.RegisterServicesFromAssembly(assembly);
-        config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-        config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+        config.RegisterServicesFromAssemblies(assembly);
     });
-
-    // Validators
-    services.AddValidatorsFromAssembly(assembly);
-
-    services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
-    services.Configure<GoogleAuthSettings>(configuration.GetSection("Authentication:Google"));
+    services.AddCarter();
     services.AddDistributedMemoryCache();
 
-    services.AddMarten(opts =>
-        opts.Connection(configuration.GetConnectionString("Database")!)
-    ).UseLightweightSessions();
+    services.Configure<AuthSettings>(configuration.GetSection("Authentication"));
+
+
+    // Repositories
+    services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     // Services
+    services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITokenService, TokenService>();
-
-    // Database Initialization (Only in Development)
-    if (env.IsDevelopment())
-    {
-        services.InitializeMartenWith<AuthInitialData>();
-    }
-
-    // Exception Handler
-    services.AddExceptionHandler<CustomExceptionHandler>();
-
-    // Health Checks
-    services.AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("Database")!);
+    
 
     // Authentication
-    var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()!;
-    var googleAuthSettings = configuration.GetSection("Authentication:Google").Get<GoogleAuthSettings>()!;
+    var authSettings = configuration.GetSection("Authentication").Get<AuthSettings>()!;
+    var jwtSettings = authSettings.Jwt;
+    var googleAuthSettings = authSettings.Google;
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
 
     services.AddAuthentication(opt =>
@@ -96,7 +89,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     {
         options.AddPolicy("AllowFrontend", policy =>
         {
-            policy.WithOrigins("http://localhost:3000")
+            policy.WithOrigins("http://localhost:3001")
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();
@@ -104,7 +97,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     });
 }
 
-void ConfigureMiddleware(WebApplication app)
+void ConfigureMiddlewares(WebApplication app, IWebHostEnvironment env)
 {
     app.UseCors("AllowFrontend");
     app.UseAuthentication();

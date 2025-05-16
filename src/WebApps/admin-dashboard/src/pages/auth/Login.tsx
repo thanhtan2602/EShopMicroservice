@@ -48,7 +48,7 @@ export default function Login() {
   };
 
   const openGoogleLogin = () => {
-    window.location.href = `https://localhost:5056/auth-service/google/login`
+    window.location.href = `https://localhost:5056/auth-service/google/signin`
   };
 
   return (

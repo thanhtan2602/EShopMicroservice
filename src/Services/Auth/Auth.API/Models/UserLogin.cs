@@ -1,11 +1,11 @@
 ﻿namespace Auth.API.Models
 {
-    public class UserLogin : Entity<int>
+    public class UserLogin : Entity<Guid>
     {
-        public int UserId { get; set; }
-        public string LoginProvider { get; set; } = default!;
-        public string ProviderKey { get; set; } = default!;
-        public string ProviderDisplayName { get; set; } = default!;
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public Guid UserId { get; set; }
+        public int LoginProvider { get; set; }
+        public string? ProviderKey { get; set; }
+        public string? ProviderDisplayName { get; set; }
+        public User User { get; set; }
     }
 }
