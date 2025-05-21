@@ -1,7 +1,7 @@
 import { fetchBaseQuery, BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import type { FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { logout, setUser } from '../features/auth/authSlice'
-import { saveAccessTokenToCookie, getRefreshTokenFromCookie } from '../services/auth.service'
+import { saveAccessTokenToCookie, getRefreshToken, getAccessToken } from '../services/auth.service'
 import { RootState } from './store'
 
 const baseUrl = process.env.NODE_ENV === 'production'
@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
   credentials: 'include', // để gửi cookie (access token)
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState
-    const token = state.auth.accessToken
+    const token = getAccessToken()
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }
@@ -31,7 +31,7 @@ export const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, Fetch
 
   if (result.error && result.error.status === 401) {
     try {
-      const refreshToken = getRefreshTokenFromCookie()
+      const refreshToken = getRefreshToken()
 
       if (!refreshToken) {
         api.dispatch(logout())

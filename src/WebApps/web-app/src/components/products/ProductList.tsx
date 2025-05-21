@@ -18,7 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, pagingInfo, onPageC
     <div className="product-list">
       <Row className="grid grid-col-2 lg:grid-cols-5 gap-8">
         {products.map((product) => (
-          <ProductCard /> 
+          <ProductCard key={product.id} product={product} /> 
         ))}
       </Row>
     </div>

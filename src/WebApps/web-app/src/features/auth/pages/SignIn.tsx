@@ -14,7 +14,6 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
 
-  // Hàm cập nhật thông tin đăng nhập sau khi nhận được token
   const updateUserLogin = useCallback(
     (user: User, accessToken: string, refreshToken: string) => {
       saveTokensToCookie(accessToken, refreshToken)
@@ -23,15 +22,22 @@ const SignIn: React.FC = () => {
     [dispatch]
   )
 
-  // Custom hook nội bộ: lắng nghe postMessage từ popup Google login
+  const normalizeUserKeys = (user: any): User => ({
+    id: user.Id,
+    fullName: user.FullName,
+    email: user.Email,
+    phoneNumber: user.PhoneNumber,
+    image: user.Image,
+  })
+
   useEffect(() => {
     const messageHandler = (event: MessageEvent) => {
-      // Kiểm tra origin (đảm bảo an toàn)
       if (event.origin !== 'https://localhost:5056') return
 
       const { accessToken, refreshToken, user } = event.data
       if (accessToken && refreshToken && user) {
-        updateUserLogin(user, accessToken, refreshToken)
+        const normalizedUser = normalizeUserKeys(user)
+        updateUserLogin(normalizedUser, accessToken, refreshToken)
         navigate('/')
       }
     }

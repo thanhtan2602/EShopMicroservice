@@ -39,7 +39,17 @@ namespace Auth.API.Features.Users.Login
             await cache.SetStringAsync(refreshTokenKey, refreshToken,
                 new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(expiryDays) });
 
-            return new LoginResult(user.Adapt<UserModel>(), accessToken, refreshToken);
+            var userModel = new UserModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.UserProfile?.FirstName,
+                LastName = user.UserProfile?.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Image = user.UserProfile?.Image,
+            };
+
+            return new LoginResult(userModel, accessToken, refreshToken);
         }
     }
 }

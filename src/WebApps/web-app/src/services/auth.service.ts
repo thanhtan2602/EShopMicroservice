@@ -9,11 +9,12 @@ export const saveTokensToCookie = (accessToken: string, refreshToken: string) =>
   Cookies.set('refreshToken', refreshToken, { secure: true })
 }
 
-export const getRefreshTokenFromCookie = (): string | undefined => {
-  return Cookies.get('refreshToken')
-}
-
-export const clearAuthCookies = () => {
+export const removeTokens = () => {
   Cookies.remove('accessToken')
   Cookies.remove('refreshToken')
 }
+
+export const getAccessToken = () => Cookies.get('accessToken')
+export const getRefreshToken = () => Cookies.get('refreshToken')
+
+

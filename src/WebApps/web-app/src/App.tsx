@@ -2,21 +2,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './components/layouts';
 import AppRoutes from './routes/AppRoutes';
 import { useAppDispatch } from 'app/hooks';
-import { useGetCurrentUserQuery } from 'features/auth/authApi';
+import { useGetUserProfileQuery } from 'features/auth/authApi';
 import { useEffect } from 'react';
 import { setUser } from 'features/auth/authSlice';
+import { getAccessToken } from 'services/auth.service';
 
 function App() {
   const dispatch = useAppDispatch()
-  const { data, error, isLoading } = useGetCurrentUserQuery()
+  const { data, error, isLoading } = useGetUserProfileQuery()
 
   useEffect(() => {
-    if (data) {
-      dispatch(setUser(data))
-    } else if (error) {
-      dispatch(setUser(null))
+    const accessToken = getAccessToken()
+    if (accessToken && data) {
+      dispatch(setUser(data.user))
     }
-  }, [data, error])
+  }, [dispatch, data])
 
   return (
     <Router>

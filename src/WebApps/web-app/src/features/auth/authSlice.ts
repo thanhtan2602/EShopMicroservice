@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '../../types/auth'
-import { clearAuthCookies } from '../../services/auth.service'
+import { removeTokens } from '../../services/auth.service'
 
 export interface AuthState {
   user: User | null
@@ -19,7 +19,7 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null
-      clearAuthCookies()
+      removeTokens()
     },
   },
 })

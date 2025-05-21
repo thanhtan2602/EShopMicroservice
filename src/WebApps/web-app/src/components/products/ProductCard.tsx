@@ -1,4 +1,10 @@
-const ProductCard = () => {
+import { Product } from "types/productTypes";
+
+interface Props {
+  product: Product
+}
+
+const ProductCard = (prop: Props) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-4">
       <img

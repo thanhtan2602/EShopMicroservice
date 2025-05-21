@@ -27,3 +27,7 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   isSuccess: boolean
 }
+
+export interface UserProfileResponse {
+  user: User;
+}

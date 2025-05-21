@@ -7,9 +7,23 @@ namespace Auth.API.Services
         IUnitOfWork unitOfWork)
         : IUserService
     {
-        public async Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<UserModel?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return await userRepository.GetByIdAsync(userId, cancellationToken);
+            var user = await userRepository.GetByIdAsync(userId, cancellationToken);
+            if (user is null)
+            {
+                return null;
+            }
+
+            return new UserModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.UserProfile?.FirstName,
+                LastName = user.UserProfile?.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Image = user.UserProfile?.Image,
+            };
         }
 
         public async Task<User?> FindUserAsync(string userName, CancellationToken cancellationToken)
