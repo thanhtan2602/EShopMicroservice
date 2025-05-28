@@ -3,14 +3,17 @@
     public record RegisterResult(bool IsSuccess);
     public record RegisterCommand(string Email, string Password, string FirstName, string LastName) 
         : ICommand<RegisterResult>;
-    //public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
-    //{
-    //    public RegisterCommandValidator()
-    //    {
-    //        RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
-    //        RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
-    //    }
-    //}
+
+    public class RegisterCommandValidator
+    : AbstractValidator<RegisterCommand>
+    {
+        public RegisterCommandValidator()
+        {
+            RuleFor(x => x.Email).NotNull().WithMessage("Email can't be null");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
+        }
+    }
+
     public class RegisterCommandHandler(
         IUserService userService) 
         : ICommandHandler<RegisterCommand, RegisterResult>

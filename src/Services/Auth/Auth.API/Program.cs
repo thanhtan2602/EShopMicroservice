@@ -1,11 +1,9 @@
-using Auth.API.Data;
 using Auth.API.Repositories.Interfaces;
 using Auth.API.Services;
-using Carter;
-using MediatR;
+using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions.Handler;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -31,8 +29,13 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddMediatR(config =>
     {
         config.RegisterServicesFromAssemblies(assembly);
+        config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        config.AddOpenBehavior(typeof(LoggingBehavior<,>));
     });
+    services.AddValidatorsFromAssembly(assembly);
+
     services.AddCarter();
+
     services.AddDistributedMemoryCache();
 
     services.Configure<AuthSettings>(configuration.GetSection("Authentication"));
@@ -52,7 +55,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     var authSettings = configuration.GetSection("Authentication").Get<AuthSettings>()!;
     var jwtSettings = authSettings.Jwt;
     var googleAuthSettings = authSettings.Google;
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
 
     services.AddAuthentication(opt =>
     {
@@ -77,12 +79,15 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = key,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
             ClockSkew = TimeSpan.Zero
         };
     });
 
     services.AddAuthorization();
+
+    // Cross-Cutting Services
+    builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
     // CORS Configuration
     services.AddCors(options =>
@@ -103,4 +108,5 @@ void ConfigureMiddlewares(WebApplication app, IWebHostEnvironment env)
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapCarter();
+    app.UseExceptionHandler(otps => { });
 }

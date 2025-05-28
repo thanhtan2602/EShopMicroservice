@@ -39,7 +39,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     builder.Services.AddStackExchangeRedisCache(options =>
     {
         options.Configuration = builder.Configuration.GetConnectionString("Redis");
-        //options.InstanceName = "Basket";
     });
 
     // Grpc Services

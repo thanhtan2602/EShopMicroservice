@@ -15,3 +15,4 @@ global using Carter;
 global using MediatR;
 global using Mapster;
 global using System.Text.Json;
+global using FluentValidation;

@@ -28,7 +28,7 @@ namespace Auth.API.Features.Users.Login
             }
 
             // Generate Access Token
-            var accessToken = tokenService.GenerateAccessToken(user);
+            var accessToken = tokenService.GenerateAccessToken(user, new List<string> { "Admin", "Customer" });
 
             // Generate and store Refresh Token
             var refreshToken = tokenService.GenerateRefreshToken(user.Id);

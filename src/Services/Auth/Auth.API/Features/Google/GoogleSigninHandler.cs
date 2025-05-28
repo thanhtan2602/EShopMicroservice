@@ -1,5 +1,6 @@
 ﻿
 using Auth.API.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Auth.API.Features.Google
 {
@@ -7,11 +8,14 @@ namespace Auth.API.Features.Google
     public record GoogleLoginResult(UserModel User, string AccessToken, string RefreshToken);
     public class GoogleSigninHandler(
         IUserService userService,
-        ITokenService tokenService)
+        ITokenService tokenService,
+        ILogger<GoogleSigninHandler> logger)
         : ICommandHandler<GoogleLoginCommand, GoogleLoginResult>
     {
         public async Task<GoogleLoginResult> Handle(GoogleLoginCommand command, CancellationToken cancellationToken)
         {
+            logger.LogInformation("Handling Google login for user: {Email}", command.GoogleUser.Email);
+
             var googleUser = command.GoogleUser;
 
             var user = await userService.FindUserAsync(googleUser.Email, cancellationToken);
@@ -62,7 +66,7 @@ namespace Auth.API.Features.Google
             }
 
             // Generate tokens
-            var accessToken = tokenService.GenerateAccessToken(user);
+            var accessToken = tokenService.GenerateAccessToken(user, new List<string> { "Admin", "Customer" });
             var refreshToken = tokenService.GenerateRefreshToken(user.Id);
 
             var userModel = new UserModel
