@@ -1,3 +1,4 @@
+using Auth.API.Middlewares;
 using Auth.API.Repositories.Interfaces;
 using Auth.API.Services;
 using BuildingBlocks.Behaviors;
@@ -105,6 +106,10 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 void ConfigureMiddlewares(WebApplication app, IWebHostEnvironment env)
 {
     app.UseCors("AllowFrontend");
+
+    // Custom middlewares
+    app.UseMiddleware<TokenValidationMiddleware>();
+
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapCarter();
